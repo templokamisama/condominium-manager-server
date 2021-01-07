@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+import os
+
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -71,14 +73,44 @@ WSGI_APPLICATION = 'condominium_manager_server.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/3.1/ref/settings/#databases
+# https://docs.djangoproject.com/en/3.0/ref/settings/#databases
+DB_HOST = os.environ.get('DB_HOST', '')
+DB_PORT = os.environ.get('DB_PORT', '')
+if ':' in DB_HOST:
+    # Split host into host:port
+    DB_HOST, DB_PORT = DB_HOST.split(':')
+DB_NAME = os.environ.get('DB_NAME')
+DB_USER = os.environ.get('DB_USER')
+DB_PASSWORD = os.environ.get('DB_PASSWORD')
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if all([DB_HOST, DB_PORT, DB_NAME, DB_USER]):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'HOST': DB_HOST,
+            'PORT': DB_PORT,
+            'NAME': DB_NAME,
+            'USER': DB_USER,
+            'PASSWORD': DB_PASSWORD,
+            # 'ATOMIC_REQUESTS': True
+        }
     }
-}
+else:
+    if any([DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD]):
+        print(
+            'Some but not all Database ENV vars present, falling back to localhost config')
+    # Fallback settings
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'condominium',
+            'USER': 'condominium',
+            'PASSWORD': 'blank',
+            'HOST': '127.0.0.1',
+            'PORT': '5432',
+            'ATOMIC_REQUESTS': True,
+        }
+    }
 
 
 # Password validation

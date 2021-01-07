@@ -1,0 +1,44 @@
+version: '3'
+
+volumes:
+  db-data:
+
+services:
+  postgres:
+    image: "postgres:alpine"
+    volumes:
+      - db-data:/pgdata
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: blank
+      POSTGRES_DB: condominium
+      POSTGRES_USER: condominium
+      PGDATA: /pgdata
+
+  app:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    depends_on:
+      - postgres
+    volumes:
+      - ./:/usr/src/app
+    ports:
+      - "8000:8000"
+    environment:
+      DJANGO_DEBUG: 'true'
+      DJANGO_ALLOWED_HOSTS: '*'
+
+      DB_NAME: condominium
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: condominium
+      DB_PASSWORD: blank
+
+      STAGE: local
+
+    # Make interactive
+    stdin_open: true
+    tty: true
+    command: ["runserver", "0.0.0.0:8000"]
