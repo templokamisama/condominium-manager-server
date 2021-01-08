@@ -19,4 +19,4 @@ RUN pip install -r /usr/src/app/requirements.txt
 
 ADD . /usr/src/app/
 
-ENTRYPOINT ["/usr/src/app/manage.py"]
+ENTRYPOINT ["python", "/usr/src/app/manage.py"]
