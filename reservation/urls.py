@@ -13,10 +13,11 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import include, path
+from django.urls import re_path
+from reservation.views import ProprietorViewSet
+
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('reservation/', include(('reservation.urls', 'reservation'), namespace='reservation')),
+    re_path(r'^proprietor/?$', ProprietorViewSet.as_view({'get': 'list'}), name='list'),
+    re_path(r'^proprietor/?$', ProprietorViewSet.as_view({'post': 'post'}), name='post'),
 ]
