@@ -3,3 +3,5 @@ django-constance==2.6.0
 djangorestframework==3.11.0
 requests==2.23.0
 psycopg2-binary==2.8.5
+flake8==3.8.1
+django-choices==1.7.1
