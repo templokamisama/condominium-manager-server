@@ -30,3 +30,9 @@ class StructureEditSerializer(serializers.ModelSerializer):
     class Meta:
         model = Structure
         fields = ('name', 'description', 'longitude', 'latitude', 'available', 'image')
+
+
+class StructureSearchParamSerializer(serializers.Serializer):
+    id = serializers.IntegerField(required=False)
+    name = serializers.CharField(required=False)
+    available = serializers.BooleanField(required=False)

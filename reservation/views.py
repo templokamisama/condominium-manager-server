@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from reservation.models import Structure
 from reservation.serializers import (MessageResponseSerializer,
                                      StructureEditSerializer,
+                                     StructureSearchParamSerializer,
                                      StructureSerializer)
 
 
@@ -19,6 +20,7 @@ class ProprietorViewSet(viewsets.ViewSet):
 
 class StructureViewSet(viewsets.ViewSet):
     @swagger_auto_schema(
+        query_serializer=StructureSearchParamSerializer(),
         responses={
             200: StructureSerializer(many=True),
             400: MessageResponseSerializer(),
@@ -26,7 +28,17 @@ class StructureViewSet(viewsets.ViewSet):
         },
     )
     def list_structures(self, request):
+        structures_param_serializer = StructureSearchParamSerializer(data=request.query_params)
+        structures_param_serializer.is_valid(raise_exception=True)
+
         structures = Structure.objects.all()
+        if 'id' in structures_param_serializer.validated_data.keys():
+            structures = structures.filter(id=structures_param_serializer.validated_data['id'])
+        if 'name' in structures_param_serializer.validated_data.keys():
+            structures = structures.filter(name=structures_param_serializer.validated_data['name'])
+        if 'available' in structures_param_serializer.validated_data.keys():
+            structures = structures.filter(available=structures_param_serializer.validated_data['available'])
+
         structure_serializer = StructureSerializer(structures, many=True)
 
         return Response(structure_serializer.data, status.HTTP_200_OK)
