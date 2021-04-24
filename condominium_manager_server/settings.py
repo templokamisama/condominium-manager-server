@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 import os
-
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -29,6 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+SECRET_JWT = os.environ.get('SECRET_JWT', 'secret_for_jwt')
 
 # Application definition
 
@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'drf_yasg',
 
     'reservation',
+    'user',
 ]
 
 MIDDLEWARE = [
@@ -74,6 +75,19 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'condominium_manager_server.wsgi.application'
+
+
+AUTH_USER_MODEL = 'user.User'
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'user.authentication.JWTCustomAuthentication',
+    ),
+}
 
 
 # Database
