@@ -6,3 +6,4 @@ psycopg2-binary==2.8.5
 flake8==3.8.1
 django-choices==1.7.1
 drf-yasg==1.17.1
+pyjwt==1.7.1

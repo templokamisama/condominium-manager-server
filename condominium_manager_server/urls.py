@@ -34,6 +34,7 @@ SchemaView = get_schema_view(
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('reservation/', include(('reservation.urls', 'reservation'), namespace='reservation')),
+    path('user/', include(('user.urls', 'user'), namespace='user')),
 ]
 
 
